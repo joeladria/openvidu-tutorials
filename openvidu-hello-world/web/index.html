@@ -1,36 +1,128 @@
 <html>
 
 <head>
-	<title>openvidu-hello-world</title>
-	<link rel="shortcut icon" href="resources/images/favicon.ico" type="image/x-icon">
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-	<link rel="styleSheet" href="style.css" type="text/css" media="screen">
-	<script src="openvidu-browser-2.14.0.js"></script>
-	<script src="app.js"></script>
+    <title>openvidu-hello-world</title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <link rel="styleSheet" href="style.css" type="text/css" media="screen">
+    <script src="openvidu-browser-2.14.0.js"></script>
+    <script src="app.js"></script>
+    <script type="text/javascript" src="chromagl.js"></script>
 </head>
 
 <body>
-	<div id="join">
-		<h1>Join a video session</h1>
-		<form onsubmit="joinSession(); return false">
-			<p>
-				<label>Session:</label>
-				<input type="text" id="sessionId" value="SessionA" required>
-			</p>
-			<p>
-				<input type="submit" value="JOIN">
-			</p>
-		</form>
-	</div>
+    <!-- <img src="examples/images/multibg.png" alt="" id="image" width="480" height="540"/> -->
+    
+<!--     <div id="joel">
+        <p><span id="fps">0</span> frames per second</p>
+    </div> -->
+    <div id="join">
+        <!-- <h1>Join a video session</h1> -->
+        <form onsubmit="joinSession(); return false">
+            <p>
+                <label>Session:</label>
+                <input type="text" id="sessionId" value="SessionA" required>
+            </p>
+            <p>
+                <input type="submit" value="JOIN">
+            </p>
+        </form>
 
-	<div id="session" style="display: none;">
-		<h1 id="session-header"></h1>
-		<input type="button" onclick="leaveSession()" value="LEAVE">
-		<div>
-			<div id="publisher"><h3>YOU</h3></div>
-			<div id="subscriber"><h3>OTHERS</h3></div>
-		</div>
-	</div>
+    </div>
+    <div id="localChroma"><canvas width="320" height="240" id="cnvs"></canvas></div>
+    <div id="session" style="display: none;">
+        <button onclick="chromaIt();" type="button" >Chroma</button>
+        <h1 id="session-header"></h1>
+        <input type="button" onclick="leaveSession()" value="LEAVE">
+        <div id="publisher">
+            
+            <h3>YOU</h3>
+        </div>
+        <div id="subscriber">
+            
+            <h3>OTHERS</h3>
+        </div>
+    </div>
 </body>
+<script src="draggable.js"></script>
+<script type="text/javascript">
+
+
+var canvas = document.getElementById('cnvs');
+var clearScreen = true;
+var chroma;
+
+
+
+// var fps = document.getElementById('fps');
+// var frames = 0;
+// var fpsUpdateTime = 0;
+
+function chromaIt() {
+
+    chroma = new ChromaGL('local-video-undefined', canvas);
+    chroma.addChromaKey([ 20, 155, 35 ]);
+    // chroma.addChromaKey({mode: "chroma", color: "green", threshold: 54.86832980505137, fuzzy: 1.25});
+// chroma.addChromaKey({mode: "chroma", color: "green"});    
+    // chroma.go();
+
+    setInterval(draw, 20);
+
+    /*
+        weird bug in video driver on mac causes errors if you leave the page alone for a while and come back.  This might get around it
+    */
+    window.onfocus = draw;
+
+
+
+
+
+    // chroma.addChromaKey({mode: 'pre', source: 1}, 0);
+    // chroma.addChromaKey({mode: 'pre', source: 2}, 0);
+}
+
+
+
+
+
+function draw() {
+    //update frame rate
+    // var now = Date.now();
+    // var elapsed = now - fpsUpdateTime;
+    // if (elapsed >= 2000) {
+    //     fps.innerHTML = elapsed ? Math.round(1000 * frames / elapsed) : '';
+    //     fpsUpdateTime = now;
+    //     frames = 0;
+    // }
+    // frames++;
+
+    //clear canvas
+
+    //draw background
+
+    //draw logos (tracked)
+
+    chroma.refresh(clearScreen);
+}
+
+
+
+
+
+//  chroma.go();
+</script>
 
 </html>
+<!-- 
+
+
+<div id="mydiv">
+    Include a header DIV with the same name as the draggable DIV, followed by "header"
+    <div id="mydivheader">Click here to move</div>
+    <p>Move</p>
+    <p>this</p>
+    <p>DIV</p>
+</div> -->
