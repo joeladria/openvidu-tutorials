@@ -5,8 +5,7 @@
     <link rel="shortcut icon" href="resources/images/favicon.ico" type="image/x-icon">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="styleSheet" href="style.css" type="text/css" media="screen">
     <script src="openvidu-browser-2.14.0.js"></script>
     <script src="app.js"></script>
@@ -15,8 +14,7 @@
 
 <body>
     <!-- <img src="examples/images/multibg.png" alt="" id="image" width="480" height="540"/> -->
-    
-<!--     <div id="joel">
+    <!--     <div id="joel">
         <p><span id="fps">0</span> frames per second</p>
     </div> -->
     <div id="join">
@@ -30,30 +28,27 @@
                 <input type="submit" value="JOIN">
             </p>
         </form>
-
     </div>
-    <div id="localChroma"><canvas width="320" height="240" id="cnvs"></canvas></div>
+    <div id="chromas">
+        <!-- <div id="localChroma"><canvas width="320" height="240" id="cnvs"></canvas></div> -->
+    </div>
     <div id="session" style="display: none;">
-        <button onclick="chromaIt();" type="button" >Chroma</button>
+        <button onclick="bindHandlers();" type="button">Chroma</button>
         <h1 id="session-header"></h1>
         <input type="button" onclick="leaveSession()" value="LEAVE">
         <div id="publisher">
-            
             <h3>YOU</h3>
         </div>
         <div id="subscriber">
-            
             <h3>OTHERS</h3>
         </div>
     </div>
 </body>
 <script src="draggable.js"></script>
 <script type="text/javascript">
-
-
-var canvas = document.getElementById('cnvs');
+// var canvas = document.getElementById('cnvs');
 var clearScreen = true;
-var chroma;
+// var chroma;
 
 
 
@@ -61,24 +56,68 @@ var chroma;
 // var frames = 0;
 // var fpsUpdateTime = 0;
 
-function chromaIt() {
+function bindHandlers() {
+    $("#subscriber video").click(chromaIt);
+    $("#publisher video").click(chromaIt);
+}
+// window.onload = function() {
+//     setInterval(function() {
+//         $("#subscriber video").click(function() {
+//             alert("hello")
+//         })
+//     }, 1000)
+// }
 
-    chroma = new ChromaGL('local-video-undefined', canvas);
-    chroma.addChromaKey([ 20, 155, 35 ]);
+chromaIt = function() {
+
+
+
+
+
+
+    canvasId = this.id + "-canvas"
+
+    $("#chromas").append('<div id="' + canvasId + '-holder"><span class="ui-icon ui-icon-close closers"></span><canvas width="320" height="240" id="' + canvasId + '" class="actor"></canvas></div>');
+
+    // canvas = document.getElementById(canvasId)
+    // canvas.width = this.width;
+    // canvas.height = this.height;
+    // canvas.getContext('2d').drawImage(this, 0, 0);
+
+    // data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+
+    // var rect = canvas.getBoundingClientRect();
+    // console.log('Canvas position', rect.left, rect.top);
+
+    // var pt = [parseInt(event.clientX - rect.left), parseInt(event.clientY - rect.top)];
+
+
+    // console.log('Point: ' + pt);
+    // var index = 4 * (pt[1] * canvas.width + pt[0]);
+    // var color = [ data[index], data[index + 1],  data[index + 2] ];
+
+    // console.log(color);
+
+
+
+    chroma = new ChromaGL(this, canvasId);
+    chroma.addChromaKey([20, 155, 35]);
+
+
+    $("#" + canvasId + "-holder").draggable().resizable({ aspectRatio: 4 / 3 }).css({ top: 0, left: 0, position: 'absolute' });
+    $("#" + canvasId + "-holder span").on("click", function() {
+        $(this).parent().fadeOut(300, function() { $(this.remove()) });
+    });
     // chroma.addChromaKey({mode: "chroma", color: "green", threshold: 54.86832980505137, fuzzy: 1.25});
-// chroma.addChromaKey({mode: "chroma", color: "green"});    
+    // chroma.addChromaKey({mode: "chroma", color: "green"});    
     // chroma.go();
 
-    setInterval(draw, 20);
+    setInterval(draw, 20, chroma);
 
     /*
         weird bug in video driver on mac causes errors if you leave the page alone for a while and come back.  This might get around it
     */
     window.onfocus = draw;
-
-
-
-
 
     // chroma.addChromaKey({mode: 'pre', source: 1}, 0);
     // chroma.addChromaKey({mode: 'pre', source: 2}, 0);
@@ -88,7 +127,7 @@ function chromaIt() {
 
 
 
-function draw() {
+function draw(chroma) {
     //update frame rate
     // var now = Date.now();
     // var elapsed = now - fpsUpdateTime;

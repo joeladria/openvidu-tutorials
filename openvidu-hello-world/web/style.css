@@ -15,24 +15,20 @@ body {
     vertical-align: middle;
     text-align: center;
     
- background: repeating-linear-gradient(
-  45deg,
-  #FFE2EE,
-  #FFE2EE 20px,
-  #fafafa 20px,
-  #fafafa 40px
-);
+
+
 
 
 
 }
 
 h3 {
-    padding: 10px;
+    /*padding: 10px;*/
     
     z-index: 10;
     background-color: #2196F3;
     color: #fff;
+    margin:0;
 }
 
 #publisher {
@@ -47,12 +43,14 @@ h3 {
 
     margin: 10px;
     width: 320px;
+    height:280px;
 }
 
 #subscriber {
     bottom:0;
     left:330;
-    width: 900px;
+    width: 100%;
+    height:280px;
     position: fixed;
     float:left;
     z-index: 9;
@@ -64,8 +62,23 @@ h3 {
     /*width: 320px;*/
 }
 
-#localChroma {
-    /*position: absolute !important;*/
+
+
+#chromas {
+    width:1280px;
+    height:60%;
+
+     background: repeating-linear-gradient(
+  45deg,
+  #FFE2EE,
+  #FFE2EE 20px,
+  #fafafa 20px,
+  #fafafa 40px
+  );
+}
+
+.closers {
+    position: absolute;
 }
 
 canvas { width:100%; }
