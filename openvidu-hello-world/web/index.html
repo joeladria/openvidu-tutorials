@@ -79,30 +79,42 @@ chromaIt = function() {
 
     $("#chromas").append('<div id="' + canvasId + '-holder"><span class="ui-icon ui-icon-close closers"></span><canvas width="320" height="240" id="' + canvasId + '" class="actor"></canvas></div>');
 
-    // canvas = document.getElementById(canvasId)
-    // canvas.width = this.width;
-    // canvas.height = this.height;
-    // canvas.getContext('2d').drawImage(this, 0, 0);
+    canvas = document.getElementById(canvasId)
+    // console.log(this)
+    canvas.width = 320;
+    canvas.height = 240;
 
-    // data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+    canvas.getContext('2d').drawImage(this, 0, 0);
 
-    // var rect = canvas.getBoundingClientRect();
-    // console.log('Canvas position', rect.left, rect.top);
+// return;
+    
+    
 
-    // var pt = [parseInt(event.clientX - rect.left), parseInt(event.clientY - rect.top)];
+    data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
 
+    var rect = $(this).offset()
+    console.log('Canvas position', rect.left, rect.top);
 
-    // console.log('Point: ' + pt);
-    // var index = 4 * (pt[1] * canvas.width + pt[0]);
-    // var color = [ data[index], data[index + 1],  data[index + 2] ];
+    var pt = [parseInt(event.clientX - rect.left), parseInt(event.clientY - rect.top)];
+    console.log('Point: ' + pt);
 
-    // console.log(color);
+    var index = 4 * (pt[1] * canvas.width + pt[0]);
+    console.log(index)
 
+    // var color = 'rgba(' + data[index].toString() + ', ' + data[index + 1].toString() + ', ' + data[index + 2].toString() + ', ' + (data[index + 3] / 255).toString() + ')';
+    var color = Array()
+    color.push(data[index])
+    color.push(data[index+1])
+    color.push(data[index+2])
+    // var color = []data[index].toString() + ', ' + data[index + 1].toString() + ', ' + data[index + 2].toString() + ', ' + (data[index + 3] / 255).toString() + ')';
+    console.log(color);
 
+    // return;
+    
 
     chroma = new ChromaGL(this, canvasId);
-    chroma.addChromaKey([20, 155, 35]);
-
+    chroma.addChromaKey(color);
+    // draw(chroma);
 
     $("#" + canvasId + "-holder").draggable().resizable({ aspectRatio: 4 / 3 }).css({ top: 0, left: 0, position: 'absolute' });
     $("#" + canvasId + "-holder span").on("click", function() {
@@ -112,12 +124,12 @@ chromaIt = function() {
     // chroma.addChromaKey({mode: "chroma", color: "green"});    
     // chroma.go();
 
-    setInterval(draw, 20, chroma);
+    window.setInterval(draw, 20, chroma);
 
     /*
         weird bug in video driver on mac causes errors if you leave the page alone for a while and come back.  This might get around it
     */
-    window.onfocus = draw;
+    // window.onfocus = draw;
 
     // chroma.addChromaKey({mode: 'pre', source: 1}, 0);
     // chroma.addChromaKey({mode: 'pre', source: 2}, 0);
